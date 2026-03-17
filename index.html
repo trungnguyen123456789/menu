@@ -781,6 +781,7 @@
         // --- HỆ THỐNG CHAT ---
         let currentChatMode = 'global'; 
         let unsubscribeChat = null; 
+        let unsubscribeUsersList = null; // Biến quản lý realtime cho danh sách bạn bè
 
         window.switchTab = function(mode) {
             document.getElementById('tabGlobal').classList.remove('active');
@@ -807,32 +808,30 @@
             }
         };
 
-      // Thêm biến này để quản lý luồng dữ liệu realtime
-        let unsubscribeUsersList = null; 
-
         window.searchUsers = function() {
             if(!auth.currentUser) return;
             const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
             const listArea = document.getElementById('userListArea');
             
-            // Xóa luồng lắng nghe cũ nếu người dùng gõ tìm kiếm mới
             if (unsubscribeUsersList) unsubscribeUsersList();
 
-            listArea.innerHTML = '<div style="text-align:center; color:gray;">Đang kết nối vệ tinh...</div>';
+            listArea.innerHTML = '<div style="text-align:center; color:gray;">Đang tải dữ liệu...</div>';
 
-            // Dùng onSnapshot để dữ liệu tự động nhảy khi có ai đó online/đổi trạng thái
             unsubscribeUsersList = onSnapshot(collection(db, "users"), (usersSnap) => {
                 listArea.innerHTML = '';
                 let found = false;
                 
                 usersSnap.forEach((docSnap) => {
                     const u = docSnap.data();
-                    if (u.uid !== auth.currentUser.uid && u.lowercaseName.includes(keyword)) {
+                    
+                    // SỬA LỖI TẠI ĐÂY: Bảo vệ an toàn nếu tài khoản thiếu trường lowercaseName
+                    const safeName = (u.lowercaseName || u.displayName || "").toLowerCase();
+
+                    if (u.uid !== auth.currentUser.uid && safeName.includes(keyword)) {
                         found = true;
                         const userAvatar = (u.equipped && u.equipped.avatar) ? u.equipped.avatar : '🧑‍💻';
                         const statusLabel = getStatusLabel(u.lastOnline); 
                         
-                        // Lấy trạng thái hoạt động
                         const activityText = u.currentActivity || 'Đang ở Sảnh';
                         const activityColor = activityText.includes('Đang cày') ? 'var(--gold)' : 'var(--text-muted)';
                         const activityLabel = `<div style="color: ${activityColor}; font-size: 13px; font-weight: bold; margin-top: 3px;">📌 ${activityText}</div>`;
@@ -844,7 +843,7 @@
                                     <div style="display: flex; flex-direction: column;">
                                         <div style="font-weight:bold; color:white; font-size: 16px;">${u.displayName}</div>
                                         ${statusLabel}
-                                        ${activityLabel} 
+                                        ${activityLabel}
                                     </div>
                                 </div>
                             </div>
@@ -853,14 +852,23 @@
                 });
                 
                 if(!found) listArea.innerHTML = '<div style="text-align:center; color:var(--accent); margin-top:20px;">Không tìm thấy ai!</div>';
-            }, (error) => {
-                console.error("Lỗi tải danh sách bạn bè:", error);
-            });
+            }, (error) => console.error("Lỗi tải bạn bè:", error));
+        };
+
+        window.openPrivateChat = function(targetUid, targetName) {
+            currentChatMode = targetUid;
+            document.getElementById('friendSearchArea').style.display = 'none';
+            document.getElementById('userListArea').style.display = 'none';
+            document.getElementById('privateChatHeader').style.display = 'flex';
+            document.getElementById('privateChatName').innerText = targetName;
+            document.getElementById('chatArea').style.display = 'flex';
+            document.getElementById('chatInputArea').style.display = 'flex';
+            loadMessages(targetUid);
         };
 
         function getPrivateChatId(uid1, uid2) { return uid1 < uid2 ? `${uid1}_${uid2}` : `${uid2}_${uid1}`; }
 
-        // --- GỬI TIN NHẮN ---
+        // --- HÀM GỬI TIN NHẮN CHUẨN ---
         window.sendMessage = async function(type = 'text', extraContent = '') {
             const chatInput = document.getElementById('chatInput');
             let text = chatInput.value.trim();
@@ -876,7 +884,7 @@
                         type: type, 
                         uid: auth.currentUser.uid, 
                         sender: userData.displayName, 
-                        nickname: userData.nickname || '', // GỬI BIỆT DANH
+                        nickname: userData.nickname || '', 
                         avatar: userData.equipped.avatar || '🧑‍💻',
                         title: userData.equipped.title || '',
                         color: userData.equipped.color || '#ffffff',
@@ -884,8 +892,11 @@
                         timestamp: serverTimestamp() 
                     };
                     
-                    if (currentChatMode === 'global') await addDoc(collection(db, "messages"), msgData);
-                    else await addDoc(collection(db, `private_chats/${getPrivateChatId(auth.currentUser.uid, currentChatMode)}/messages`), msgData);
+                    if (currentChatMode === 'global') {
+                        await addDoc(collection(db, "messages"), msgData);
+                    } else {
+                        await addDoc(collection(db, `private_chats/${getPrivateChatId(auth.currentUser.uid, currentChatMode)}/messages`), msgData);
+                    }
                 } catch (e) { console.error(e); }
             }
         };
