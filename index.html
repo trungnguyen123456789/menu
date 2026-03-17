@@ -102,11 +102,13 @@
         .chat-input:focus { border-color: var(--primary); background: rgba(255,255,255,0.06); box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);}
         .send-btn { background: linear-gradient(135deg, var(--primary), #2563eb); color: white; border: none; border-radius: 50%; width: 45px; height: 45px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.3s; box-shadow: 0 4px 15px var(--primary-glow); font-size: 18px;}
         .send-btn:hover { background: linear-gradient(135deg, var(--accent), #e11d48); transform: scale(1.1) rotate(-10deg); box-shadow: 0 4px 20px rgba(244, 63, 94, 0.5);}
+        
         /* Hiển thị ảnh trong chat */
         .msg-image { max-width: 220px; max-height: 250px; border-radius: 15px; cursor: pointer; object-fit: cover; transition: 0.3s; }
         .msg-image:hover { transform: scale(1.05); }
         .image-upload-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--panel-border); color: white; width: 45px; height: 45px; border-radius: 50%; font-size: 20px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; }
         .image-upload-btn:hover { background: rgba(255,255,255,0.1); border-color: #10b981; transform: scale(1.1); box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
+        
         /* Bảng chọn Sticker */
         .sticker-picker { position: absolute; bottom: 70px; left: 15px; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(10px); border: 1px solid var(--primary); border-radius: 15px; padding: 15px; display: none; grid-template-columns: repeat(4, 1fr); gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 50;}
         .sticker-item-btn { font-size: 35px; background: transparent; border: none; cursor: pointer; transition: 0.2s; padding: 5px; border-radius: 10px;}
@@ -235,22 +237,24 @@
         <main class="main-content">
             <h1 class="page-title">Sảnh Chọn Môn</h1>
             <div class="subject-grid">
-                <div class="subject-card card-math" onclick="window.location.href='https://trungnguyen123456789.github.io/toan/'">
+                <div class="subject-card card-math" onclick="enterSubject('Toán Học', 'https://trungnguyen123456789.github.io/toan/')">
+                    <div class="subject-icon">🖋️</div>">
                     <div class="subject-icon">📐</div>
                     <div class="subject-title">Toán Học</div>
                     <div class="subject-desc">Đại số, Hình học không gian và các dạng đề chuẩn cấu trúc mới.</div>
                 </div>
-                <div class="subject-card card-lit" onclick="window.location.href='https://trungnguyen123456789.github.io/van/'">
+                <div class="subject-card card-lit" onclick="enterSubject('Ngữ Văn', 'https://trungnguyen123456789.github.io/van/')">
                     <div class="subject-icon">🖋️</div>
                     <div class="subject-title">Ngữ Văn</div>
                     <div class="subject-desc">Phân tích tác phẩm, nghị luận xã hội, rèn luyện kỹ năng viết.</div>
                 </div>
-                <div class="subject-card card-eng" onclick="window.location.href='https://trungnguyen123456789.github.io/tienganh'">
+                <div class="subject-card card-eng" onclick="enterSubject('Tiếng Anh', 'https://trungnguyen123456789.github.io/tienganh')">
+                    <div class="subject-icon">🖋️</div>)">
                     <div class="subject-icon">🌍</div>
                     <div class="subject-title">Tiếng Anh</div>
                     <div class="subject-desc">Cày từ vựng qua Flashcard, luyện đề ngữ pháp và đọc hiểu.</div>
                 </div>
-                <div class="subject-card card-vact" onclick="alert('Đang cập nhật!')">
+                <div class="subject-card card-vact" onclick="enterSubject('Đấu Trường V-ACT', '')">
                     <div class="subject-icon">🔥</div>
                     <div class="subject-title">Đấu Trường V-ACT</div>
                     <div class="subject-desc">Lò luyện ĐGNL ĐHQG TP.HCM. Thử thách 120 câu - 150 phút.</div>
@@ -259,7 +263,7 @@
         </main>
     </div>
 
-<div id="shopModal" class="modal">
+    <div id="shopModal" class="modal">
         <div class="modal-content" style="max-width: 1100px;">
             <span class="close-btn" onclick="closeShop()">&times;</span>
             <div style="text-align: center; margin-bottom: 40px;">
@@ -432,78 +436,9 @@
                 <p style="color: var(--text-muted); font-size: 14px; margin-top: 15px;"><i>(Không cần trang bị thủ công, Sticker bạn mua sẽ tự động xuất hiện ở thanh nhập chat)</i></p>
             </div>
         </div>
-    </div>    <div id="profileModal" class="modal">
-        <div class="modal-content" style="max-width: 900px;">
-            <span class="close-btn" onclick="closeProfile()">&times;</span>
-            <div style="text-align: center; margin-bottom: 30px;">
-                <h2 style="margin-top: 0; font-size: 38px; font-weight: 900; color: white; text-shadow: 0 0 15px var(--primary-glow), 0 0 30px var(--primary);">🎒 HÀNH TRANG CÁ NHÂN</h2>
-                <p style="color: var(--text-muted); font-size: 16px;">Bấm vào vật phẩm để trang bị cho bản thân!</p>
-            </div>
-            
-            <div class="profile-section">
-                <h3 style="font-size: 20px;">🎭 Ảnh Đại Diện (Avatar)</h3>
-                <div class="inventory-grid" id="invAvatars">Đang tải...</div>
-            </div>
-
-            <div class="profile-section">
-                <h3 style="font-size: 20px;">🐾 Thú Cưng Trang Bị (Hiển thị góc khung chat)</h3>
-                <div class="inventory-grid" id="invPets">Đang tải...</div>
-            </div>
-
-            <div class="profile-section">
-                <h3 style="font-size: 20px;">🏅 Danh Hiệu Hiện Tại</h3>
-                <div class="inventory-grid" id="invTitles">Đang tải...</div>
-            </div>
-
-            <div class="profile-section">
-                <h3 style="font-size: 20px;">🎨 Màu Chữ Tỏa Sáng</h3>
-                <div class="inventory-grid" id="invColors">Đang tải...</div>
-            </div>
-            
-            <div class="profile-section">
-                <h3 style="font-size: 20px;">🏷️ Bộ Sưu Tập Sticker</h3>
-                <div class="inventory-grid" id="invStickers" style="font-size: 26px; gap: 20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px;">Đang tải...</div>
-                <p style="color: var(--text-muted); font-size: 14px; margin-top: 15px;"><i>(Không cần trang bị thủ công, Sticker bạn mua sẽ tự động xuất hiện ở thanh nhập chat)</i></p>
-            </div>
-        </div>
     </div>
 
-    <div id="profileModal" class="modal">
-        <div class="modal-content" style="max-width: 900px;">
-            <span class="close-btn" onclick="closeProfile()">&times;</span>
-            <div style="text-align: center; margin-bottom: 30px;">
-                <h2 style="margin-top: 0; font-size: 38px; font-weight: 900; color: white; text-shadow: 0 0 15px var(--primary-glow), 0 0 30px var(--primary);">🎒 HÀNH TRANG CÁ NHÂN</h2>
-                <p style="color: var(--text-muted); font-size: 16px;">Bấm vào vật phẩm để trang bị cho bản thân!</p>
-            </div>
-            
-            <div class="profile-section">
-                <h3 style="font-size: 20px;">🎭 Ảnh Đại Diện (Avatar)</h3>
-                <div class="inventory-grid" id="invAvatars">Đang tải...</div>
-            </div>
-
-            <div class="profile-section">
-                <h3 style="font-size: 20px;">🐾 Thú Cưng Trang Bị (Hiển thị góc khung chat)</h3>
-                <div class="inventory-grid" id="invPets">Đang tải...</div>
-            </div>
-
-            <div class="profile-section">
-                <h3 style="font-size: 20px;">🏅 Danh Hiệu Hiện Tại</h3>
-                <div class="inventory-grid" id="invTitles">Đang tải...</div>
-            </div>
-
-            <div class="profile-section">
-                <h3 style="font-size: 20px;">🎨 Màu Chữ Tỏa Sáng</h3>
-                <div class="inventory-grid" id="invColors">Đang tải...</div>
-            </div>
-            
-            <div class="profile-section">
-                <h3 style="font-size: 20px;">🏷️ Bộ Sưu Tập Sticker</h3>
-                <div class="inventory-grid" id="invStickers" style="font-size: 26px; gap: 20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px;">Đang tải...</div>
-                <p style="color: var(--text-muted); font-size: 14px; margin-top: 15px;"><i>(Không cần trang bị thủ công, Sticker bạn mua sẽ tự động xuất hiện ở thanh nhập chat)</i></p>
-            </div>
-        </div>
-    </div>
-   <div id="imageViewerModal" class="modal" style="z-index: 2000; flex-direction: column; cursor: zoom-out;" onclick="closeImageViewer()">
+    <div id="imageViewerModal" class="modal" style="z-index: 2000; flex-direction: column; cursor: zoom-out;" onclick="closeImageViewer()">
         <img id="fullSizeImage" src="" style="max-width: 90%; max-height: 90%; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); object-fit: contain;">
         <div style="color: white; margin-top: 15px; font-weight: bold; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px;">Nhấn vào bất kỳ đâu để đóng</div>
     </div>
@@ -527,6 +462,36 @@
         const db = getFirestore(app);
 
         let userData = null;
+
+        // --- TRẠNG THÁI MÔN HỌC ---
+        window.enterSubject = async function(subjectName, url) {
+            if (auth.currentUser) {
+                try {
+                    // Cập nhật trạng thái môn học lên Firebase trước khi chuyển trang
+                    await updateDoc(doc(db, "users", auth.currentUser.uid), {
+                        currentActivity: `Đang cày ${subjectName}`,
+                        lastOnline: serverTimestamp() // Cập nhật luôn thời gian online
+                    });
+                } catch (e) {
+                    console.error("Lỗi cập nhật trạng thái:", e);
+                }
+            }
+            
+            // Đợi 1 chút để Firebase kịp lưu rồi mới chuyển hướng
+            setTimeout(() => {
+                if (url) {
+                    window.location.href = url;
+                } else {
+                    alert('Đang cập nhật!');
+                    // Nếu môn chưa mở, reset lại trạng thái về sảnh
+                    if (auth.currentUser) {
+                        updateDoc(doc(db, "users", auth.currentUser.uid), { 
+                            currentActivity: 'Đang ở Sảnh' 
+                        }).catch(e=>{});
+                    }
+                }
+            }, 200);
+        };
 
         // --- PRESENCE SYSTEM (ONLINE/OFFLINE) ---
         async function updatePresence(uid) {
@@ -579,6 +544,7 @@
                         lowercaseName: username.toLowerCase(),
                         gold: 2500, 
                         lastOnline: serverTimestamp(),
+                        currentActivity: 'Đang ở Sảnh',
                         inventory: { avatars: ['🧑‍💻'], titles: ['Tân Binh'], colors: ['#ffffff'], stickers: ['👍', '❤️', '😂'], pets: [] }, 
                         equipped: { avatar: '🧑‍💻', title: 'Tân Binh', color: '#ffffff', pet: '' } 
                     });
@@ -595,6 +561,9 @@
             if (user) {
                 authOverlay.style.display = 'none';
                 updatePresence(user.uid); 
+                
+                // Khi load trang chủ thì cập nhật trạng thái là đang ở sảnh
+                updateDoc(doc(db, "users", user.uid), { currentActivity: 'Đang ở Sảnh' }).catch(e=>{});
                 
                 unsubscribeUser = onSnapshot(doc(db, "users", user.uid), async (docSnap) => {
                     if (docSnap.exists()) {
@@ -666,7 +635,8 @@
                 if(category !== 'stickers') alert("Giao dịch thành công! Hãy vào Hành Trang để trang bị.");
             } catch (e) { console.error(e); }
         };
-// --- LƯU BIỆT DANH ---
+
+        // --- LƯU BIỆT DANH ---
         window.saveNickname = async function() {
             if (!userData) return;
             const newNick = document.getElementById('nicknameInput').value.trim();
@@ -678,6 +648,7 @@
                 userData.nickname = newNick; // Cập nhật ngay trên máy
             } catch (e) { console.error(e); }
         };
+
         window.openProfile = function() {
             if (!userData) return;
             document.getElementById('profileModal').style.display = 'flex';
@@ -838,22 +809,35 @@
             }
         };
 
-        window.searchUsers = async function() {
+      // Thêm biến này để quản lý luồng dữ liệu realtime
+        let unsubscribeUsersList = null; 
+
+        window.searchUsers = function() {
             if(!auth.currentUser) return;
             const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
             const listArea = document.getElementById('userListArea');
-            listArea.innerHTML = '<div style="text-align:center; color:gray;">Đang tải...</div>';
+            
+            // Xóa luồng lắng nghe cũ nếu người dùng gõ tìm kiếm mới
+            if (unsubscribeUsersList) unsubscribeUsersList();
 
-            try {
-                const usersSnap = await getDocs(collection(db, "users"));
+            listArea.innerHTML = '<div style="text-align:center; color:gray;">Đang kết nối vệ tinh...</div>';
+
+            // Dùng onSnapshot để dữ liệu tự động nhảy khi có ai đó online/đổi trạng thái
+            unsubscribeUsersList = onSnapshot(collection(db, "users"), (usersSnap) => {
                 listArea.innerHTML = '';
                 let found = false;
+                
                 usersSnap.forEach((docSnap) => {
                     const u = docSnap.data();
                     if (u.uid !== auth.currentUser.uid && u.lowercaseName.includes(keyword)) {
                         found = true;
                         const userAvatar = (u.equipped && u.equipped.avatar) ? u.equipped.avatar : '🧑‍💻';
                         const statusLabel = getStatusLabel(u.lastOnline); 
+                        
+                        // Lấy trạng thái hoạt động
+                        const activityText = u.currentActivity || 'Đang ở Sảnh';
+                        const activityColor = activityText.includes('Đang cày') ? 'var(--gold)' : 'var(--text-muted)';
+                        const activityLabel = `<div style="color: ${activityColor}; font-size: 13px; font-weight: bold; margin-top: 3px;">📌 ${activityText}</div>`;
                         
                         listArea.insertAdjacentHTML('beforeend', `
                             <div class="user-item" onclick="openPrivateChat('${u.uid}', '${u.displayName}')" style="justify-content: space-between;">
@@ -862,25 +846,18 @@
                                     <div style="display: flex; flex-direction: column;">
                                         <div style="font-weight:bold; color:white; font-size: 16px;">${u.displayName}</div>
                                         ${statusLabel}
+                                        ${activityLabel} 
                                     </div>
                                 </div>
                             </div>
                         `);
                     }
                 });
+                
                 if(!found) listArea.innerHTML = '<div style="text-align:center; color:var(--accent); margin-top:20px;">Không tìm thấy ai!</div>';
-            } catch (error) { console.error(error); }
-        };
-
-        window.openPrivateChat = function(targetUid, targetName) {
-            currentChatMode = targetUid;
-            document.getElementById('friendSearchArea').style.display = 'none';
-            document.getElementById('userListArea').style.display = 'none';
-            document.getElementById('privateChatHeader').style.display = 'flex';
-            document.getElementById('privateChatName').innerText = targetName;
-            document.getElementById('chatArea').style.display = 'flex';
-            document.getElementById('chatInputArea').style.display = 'flex';
-            loadMessages(targetUid);
+            }, (error) => {
+                console.error("Lỗi tải danh sách bạn bè:", error);
+            });
         };
 
         function getPrivateChatId(uid1, uid2) { return uid1 < uid2 ? `${uid1}_${uid2}` : `${uid2}_${uid1}`; }
@@ -901,7 +878,7 @@
                         type: type, 
                         uid: auth.currentUser.uid, 
                         sender: userData.displayName, 
-                        nickname: userData.nickname || '', // <--- THÊM DÒNG NÀY ĐỂ GỬI BIỆT DANH
+                        nickname: userData.nickname || '', // GỬI BIỆT DANH
                         avatar: userData.equipped.avatar || '🧑‍💻',
                         title: userData.equipped.title || '',
                         color: userData.equipped.color || '#ffffff',
@@ -955,8 +932,8 @@
                     const msgClass = isMe ? "msg-wrapper me" : "msg-wrapper other";
                     
                     // --- LOGIC HIỂN THỊ BIỆT DANH ---
-                    const realName = data.sender || "Khách"; // Tên tài khoản gốc
-                    const displayNick = data.nickname ? data.nickname : realName; // Nếu có biệt danh thì dùng, ko thì dùng tên gốc
+                    const realName = data.sender || "Khách";
+                    const displayNick = data.nickname ? data.nickname : realName;
                     const displayName = isMe ? "Bạn" : displayNick;
                     // ---------------------------------
                     
@@ -964,8 +941,6 @@
                     const userTitle = data.title ? `<span style="color:var(--gold)">[${data.title}]</span> ` : '';
                     const textColor = data.color || '#ffffff';
                     const petHtml = data.pet ? `<div class="msg-pet">${data.pet}</div>` : '';
-                    
-                    // ... (Đoạn xử lý messageContentHTML giữ nguyên) ...
 
                    let messageContentHTML = '';
                     if (data.type === 'sticker') {
